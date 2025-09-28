@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QuotationRequest>
+    <RequestID>Q-20240612-001</RequestID>
+    <RequestDate>2024-06-12</RequestDate>
+    <Customer>
+        <CustomerID>CUST-12345</CustomerID>
+        <Name>Acme Corporation</Name>
+        <Contact>
+            <Name>Jane Doe</Name>
+            <Email>jane.doe@acme.com</Email>
+            <Phone>+1-555-123-4567</Phone>
+        </Contact>
+    </Customer>
+    <Items>
+        <Item>
+            <ItemID>ITEM-001</ItemID>
+            <Description>High-Speed Industrial Printer</Description>
+            <Quantity>2</Quantity>
+            <Unit>pcs</Unit>
+        </Item>
+        <Item>
+            <ItemID>ITEM-002</ItemID>
+            <Description>Printer Ink Cartridge</Description>
+            <Quantity>10</Quantity>
+            <Unit>pcs</Unit>
+        </Item>
+    </Items>
+    <Delivery>
+        <Address>123 Main Street, Springfield, USA</Address>
+        <RequiredBy>2024-07-01</RequiredBy>
+    </Delivery>
+    <Notes>Please provide the best possible price and delivery time.</Notes>
+</QuotationRequest>
