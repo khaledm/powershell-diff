@@ -4,14 +4,14 @@
 
 param (
     [Parameter()]
-    [switch]$CI
+    [switch]$CI = $false
 )
 
 # Configure Pester
 $config = New-PesterConfiguration
 $config.Run.Path = Join-Path $PSScriptRoot "tests"
 $config.Output.Verbosity = if ($CI) { "Detailed" } else { "Normal" }
-$config.TestResult.Enabled = $CI
+$config.TestResult.Enabled = $false
 $config.TestResult.OutputPath = "test-results.xml"
 $config.TestResult.OutputFormat = "NUnitXml"
 $config.CodeCoverage.Enabled = $true

@@ -5,9 +5,11 @@ function Compare-XmlContent {
     [CmdletBinding()]
     param (
         [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [string]$ReferenceXml,
 
         [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
         [string]$DifferenceXml,
 
         [Parameter(Mandatory = $false)]
@@ -15,9 +17,19 @@ function Compare-XmlContent {
     )
 
     try {
+        # Validate XML input
+        if ([string]::IsNullOrWhiteSpace($ReferenceXml) -or [string]::IsNullOrWhiteSpace($DifferenceXml)) {
+            throw "XML content cannot be empty or whitespace"
+        }
+
         # Parse XML documents
-        $refDoc = [xml]$ReferenceXml
-        $diffDoc = [xml]$DifferenceXml
+        try {
+            $refDoc = [xml]$ReferenceXml
+            $diffDoc = [xml]$DifferenceXml
+        }
+        catch {
+            throw "Invalid XML format: $_"
+        }
     }
     catch {
         throw New-Object System.Exception "Invalid XML provided", $_.Exception, 'InvalidXml'

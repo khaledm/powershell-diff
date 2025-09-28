@@ -1,9 +1,10 @@
 BeforeAll {
-    $srcPath = (Get-Item $PSScriptRoot).Parent.FullName
+    $rootPath = (Get-Item $PSScriptRoot).Parent.FullName
+    $srcPath = Join-Path $rootPath "src"
     $modulesPath = Join-Path $srcPath "modules"
-    $examplesPath = Join-Path (Get-Item $srcPath).Parent.FullName "examples"
+    $examplesPath = Join-Path $rootPath "examples"
     $exampleRequestPath = Join-Path $examplesPath "request.xml"
-    $script:diffReportPath = Join-Path $PSScriptRoot "diff-report.ps1"
+    $script:diffReportPath = Join-Path $srcPath "diff-report.ps1"
 
     # Import modules for mocking
     Import-Module (Join-Path $modulesPath "XmlDiff.psm1") -Force
@@ -42,13 +43,46 @@ BeforeAll {
 
     # Mock Invoke-RestMethod
     Mock Invoke-RestMethod {
-        param($Uri)
-        if ($Uri -like "*poc") {
-            [xml]$script:pocResponseXml
+        param($Uri, $Method, $Body, $ContentType)
+        
+        # Validate request
+        if ($Method -ne 'Post') {
+            throw "Method must be POST"
+        }
+        
+        if ($ContentType -ne 'application/xml') {
+            throw "Content type must be application/xml"
+        }
+
+        if ([string]::IsNullOrWhiteSpace($Body)) {
+            throw "Request body is required"
+        }
+
+        try {
+            # Validate request XML
+            $null = [xml]$Body
+        }
+        catch {
+            throw "Invalid request XML: $_"
+        }
+
+        # Create response
+        $responseXml = if ($Uri -like "*poc") {
+            $script:pocResponseXml
         }
         else {
-            [xml]$script:nonPocResponseXml
+            $script:nonPocResponseXml
         }
+
+        # Parse and return response with proper properties
+        $response = [xml]$responseXml
+        
+        # Mock OuterXml property to match real service behavior
+        Add-Member -InputObject $response -MemberType ScriptProperty -Name "OuterXml" -Value { 
+            return $this.InnerXml 
+        } -Force
+
+        return $response
     }
 }
 

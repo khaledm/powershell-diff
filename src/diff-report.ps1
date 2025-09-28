@@ -51,29 +51,47 @@ $nonPocEndpoint = "http://localhost:7072/quotes/api/non-poc"
 # Function to call service and handle errors
 function Invoke-ServiceCall {
     param (
+        [Parameter(Mandatory = $true)]
         [string]$Endpoint,
+        
+        [Parameter(Mandatory = $true)]
         [string]$RequestXml
     )
 
     try {
         Write-Log "Sending request to $Endpoint"
+        
+        # Make the service call
         $response = Invoke-RestMethod -Uri $Endpoint -Method Post -Body $RequestXml -ContentType 'application/xml'
+        
+        if ($null -eq $response) {
+            throw "Service returned null response"
+        }
+
+        if ($null -eq $response.OuterXml) {
+            throw "Service response is missing XML content"
+        }
+
         Write-Log "Received response from $Endpoint"
         return $response.OuterXml
     }
     catch {
-        Write-Log "Service call failed: $_" -Level Error
+        $errorMsg = "Service call failed: $($_.Exception.Message)"
+        Write-Log $errorMsg -Level Error
         throw New-Object System.Exception "Service $Endpoint is unavailable or returned an error", $_.Exception
     }
 }
 
 try {
+    # Resolve the request XML path
+    $resolvedPath = $ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($RequestXmlPath)
+    
     # Read and validate request XML
-    if (-not (Test-Path $RequestXmlPath)) {
+    if (-not (Test-Path $resolvedPath)) {
         throw "Request XML file not found: $RequestXmlPath"
     }
 
-    $requestXml = Get-Content $RequestXmlPath -Raw
+    $requestXml = Get-Content $resolvedPath -Raw
     try {
         [xml]$null = $requestXml # Validate XML syntax
     }
