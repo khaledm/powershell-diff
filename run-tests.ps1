@@ -24,7 +24,7 @@ $mockServiceProcess = Start-Process pwsh -ArgumentList "-NoProfile -NonInteracti
 
 try {
     # Give the mock service a moment to start
-    Start-Sleep -Seconds 2
+    Start-Sleep -Seconds 15
 
     # Run the tests
     $result = Invoke-Pester -Configuration $config

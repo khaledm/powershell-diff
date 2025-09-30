@@ -1,0 +1,79 @@
+BeforeAll {
+    $rootPath = (Get-Item $PSScriptRoot).Parent.FullName
+    $srcPath = Join-Path $rootPath "src"
+    $modulesPath = Join-Path $srcPath "modules"
+    $examplesPath = Join-Path $rootPath "examples"
+    $exampleRequestPath = Join-Path $examplesPath "request.xml"
+
+    # Import modules for testing
+    Import-Module (Join-Path $modulesPath "XmlDiff.psm1") -Force
+    Import-Module (Join-Path $modulesPath "Utils.psm1") -Force
+    Import-Module (Join-Path $modulesPath "DiffReport.psm1") -Force
+
+    # Import mock setup
+    . (Join-Path $PSScriptRoot "mock-setup.ps1")
+}
+
+Describe "End-to-End XML Diff Testing" {
+    Context "Basic functionality" {
+        BeforeAll {
+            # Create a temp file for output
+            $script:outputPath = Join-Path $TestDrive "diff-report.html"
+        }
+
+        It "Generates HTML report successfully" {
+            # Execute the diff report
+            { Invoke-DiffReport -RequestXmlPath $exampleRequestPath -OutputPath $script:outputPath } | 
+                Should -Not -Throw
+
+            # Verify output file exists
+            $script:outputPath | Should -Exist
+        }
+
+        It "Report contains expected differences" {
+            # Execute diff report
+            Invoke-DiffReport -RequestXmlPath $exampleRequestPath -OutputPath $script:outputPath
+            $report = Get-Content $script:outputPath -Raw
+
+            # Check for expected differences in policy numbers
+            $report | Should -Match "POC12345.*NONPROC12345"
+            
+            # Check for monetary value differences
+            $report | Should -Match "1250\.00.*1275\.00" # Base premium
+            $report | Should -Match "1050\.00.*1071\.00" # Total premium
+        }
+
+        It "Makes expected service calls" {
+            # Execute diff report
+            Invoke-DiffReport -RequestXmlPath $exampleRequestPath -OutputPath $script:outputPath
+
+            # Verify both services were called
+            Should -Invoke Invoke-RestMethod -Times 1 -ParameterFilter { $Uri -like "*poc" } -ModuleName DiffReport
+            Should -Invoke Invoke-RestMethod -Times 1 -ParameterFilter { $Uri -like "*non-poc" } -ModuleName DiffReport
+        }
+    }
+
+    Context "Error handling" {
+        It "Handles missing request XML gracefully" {
+            { Invoke-DiffReport -RequestXmlPath "nonexistent.xml" } |
+                Should -Throw -ExpectedMessage "*not found*"
+        }
+
+        It "Handles invalid request XML gracefully" {
+            # Create invalid XML file
+            $invalidXmlPath = Join-Path $TestDrive "invalid.xml"
+            Set-Content -Path $invalidXmlPath -Value "This is not XML"
+
+            { Invoke-DiffReport -RequestXmlPath $invalidXmlPath } |
+                Should -Throw -ExpectedMessage "*Invalid request XML*"
+        }
+
+        It "Handles service failures gracefully" {
+            # Mock service failure
+            Mock Invoke-RestMethod { throw "Service unavailable" } -ModuleName DiffReport
+
+            { Invoke-DiffReport -RequestXmlPath $exampleRequestPath } |
+                Should -Throw -ExpectedMessage "*Service * is unavailable*"
+        }
+    }
+}

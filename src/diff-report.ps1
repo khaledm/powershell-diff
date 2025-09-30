@@ -43,43 +43,15 @@ param (
 $moduleRoot = Join-Path $PSScriptRoot "modules"
 Import-Module (Join-Path $moduleRoot "XmlDiff.psm1") -Force
 Import-Module (Join-Path $moduleRoot "Utils.psm1") -Force
+Import-Module (Join-Path $moduleRoot "DiffReport.psm1") -Force
 
-# Service endpoints
-$pocEndpoint = "http://localhost:7072/quotes/api/poc"
-$nonPocEndpoint = "http://localhost:7072/quotes/api/non-poc"
-
-# Function to call service and handle errors
-function Invoke-ServiceCall {
-    param (
-        [Parameter(Mandatory = $true)]
-        [string]$Endpoint,
-        
-        [Parameter(Mandatory = $true)]
-        [string]$RequestXml
-    )
-
-    try {
-        Write-Log "Sending request to $Endpoint"
-        
-        # Make the service call
-        $response = Invoke-RestMethod -Uri $Endpoint -Method Post -Body $RequestXml -ContentType 'application/xml'
-        
-        if ($null -eq $response) {
-            throw "Service returned null response"
-        }
-
-        if ($null -eq $response.OuterXml) {
-            throw "Service response is missing XML content"
-        }
-
-        Write-Log "Received response from $Endpoint"
-        return $response.OuterXml
-    }
-    catch {
-        $errorMsg = "Service call failed: $($_.Exception.Message)"
-        Write-Log $errorMsg -Level Error
-        throw New-Object System.Exception "Service $Endpoint is unavailable or returned an error", $_.Exception
-    }
+# Execute the diff report
+try {
+    Invoke-DiffReport -RequestXmlPath $RequestXmlPath -OutputPath $OutputPath -OrderSignificant:$OrderSignificant
+}
+catch {
+    Write-Log $_.Exception.Message -Level Error
+    throw
 }
 
 try {

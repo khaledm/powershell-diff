@@ -4,11 +4,11 @@ BeforeAll {
     $modulesPath = Join-Path $srcPath "modules"
     $examplesPath = Join-Path $rootPath "examples"
     $exampleRequestPath = Join-Path $examplesPath "request.xml"
-    $script:diffReportPath = Join-Path $srcPath "diff-report.ps1"
 
-    # Import modules for mocking
+    # Import modules for testing
     Import-Module (Join-Path $modulesPath "XmlDiff.psm1") -Force
     Import-Module (Join-Path $modulesPath "Utils.psm1") -Force
+    Import-Module (Join-Path $modulesPath "DiffReport.psm1") -Force
 
     # Mock service response XML
     $script:pocResponseXml = @'
@@ -94,8 +94,8 @@ Describe "End-to-End XML Diff Testing" {
         }
 
         It "Generates HTML report successfully" {
-            # Execute the script
-            { & $script:diffReportPath -RequestXmlPath $exampleRequestPath -OutputPath $script:outputPath } | 
+            # Execute the diff report
+            { Invoke-DiffReport -RequestXmlPath $exampleRequestPath -OutputPath $script:outputPath } | 
                 Should -Not -Throw
 
             # Verify output file exists
@@ -115,7 +115,9 @@ Describe "End-to-End XML Diff Testing" {
 
         It "Makes expected service calls" {
             # Execute script again
-            & $script:diffReportPath -RequestXmlPath $exampleRequestPath -OutputPath $script:outputPath
+            #& $script:diffReportPath -RequestXmlPath $exampleRequestPath -OutputPath $script:outputPath
+            . $script:diffReportPath
+            diff-report -RequestXmlPath $exampleRequestPath -OutputPath $script:outputPath
 
             # Verify both services were called
             Should -Invoke Invoke-RestMethod -Times 1 -ParameterFilter { $Uri -like "*poc" }
