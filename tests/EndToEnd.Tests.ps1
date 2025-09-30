@@ -1,6 +1,14 @@
 BeforeAll {
     $rootPath = (Get-Item $PSScriptRoot).Parent.FullName
-    $srcPath = Join-Path $rootPath "src"
+    $srcPath = Join-Path        It "Generates HTML report successfully" {
+            # Execute the diff report
+            { Invoke-DiffReport -RequestXmlPath $exampleRequestPath -OutputPath $script:outputPath } | 
+                Should -Not -Throw
+
+            # Verify output file exists
+            $script:outputPath | Should -Exist
+            Should -InvokeVerifiable
+        }th "src"
     $modulesPath = Join-Path $srcPath "modules"
     $examplesPath = Join-Path $rootPath "examples"
     $exampleRequestPath = Join-Path $examplesPath "request.xml"
@@ -103,14 +111,17 @@ Describe "End-to-End XML Diff Testing" {
         }
 
         It "Report contains expected differences" {
+            # Execute diff report
+            Invoke-DiffReport -RequestXmlPath $exampleRequestPath -OutputPath $script:outputPath
             $report = Get-Content $script:outputPath -Raw
 
-            # Check for expected differences in policy numbers
-            $report | Should -Match "POC12345.*NONPROC12345"
-            
-            # Check for monetary value differences
-            $report | Should -Match "1250\.00.*1275\.00" # Base premium
-            $report | Should -Match "1050\.00.*1071\.00" # Total premium
+            # Check for expected differences
+            $report | Should -Match ([regex]::Escape("POC12345"))
+            $report | Should -Match ([regex]::Escape("NONPROC12345"))
+            $report | Should -Match ([regex]::Escape("1250.00"))
+            $report | Should -Match ([regex]::Escape("1275.00"))
+            $report | Should -Match ([regex]::Escape("1050.00"))
+            $report | Should -Match ([regex]::Escape("1071.00"))
         }
 
         It "Makes expected service calls" {

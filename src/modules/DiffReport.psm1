@@ -1,6 +1,36 @@
 # DiffReport module for XML comparison and reporting
 # Contains the core functionality for the diff-report tool
 
+function Invoke-ServiceCall {
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$Endpoint,
+        
+        [Parameter(Mandatory = $true)]
+        [string]$RequestXml
+    )
+
+    try {
+        Write-Log "Sending request to $Endpoint"
+        
+        # Make the service call
+        $response = Invoke-RestMethod -Uri $Endpoint -Method Post -Body $RequestXml -ContentType 'application/xml'
+        
+        if ($null -eq $response) {
+            throw "Service returned null response"
+        }
+
+        Write-Log "Received response from $Endpoint"
+        return $response
+    }
+    catch {
+        $errorMsg = "Service call failed: $($_.Exception.Message)"
+        Write-Log $errorMsg -Level Error
+        throw New-Object System.Exception "Service $Endpoint is unavailable or returned an error", $_.Exception
+    }
+}
+
 function Invoke-DiffReport {
     [CmdletBinding()]
     param (
@@ -31,16 +61,19 @@ function Invoke-DiffReport {
     }
 
     # Call both services
+    Write-Log "Calling PoC service..."
     $pocResponse = Invoke-ServiceCall -Endpoint $script:pocEndpoint -RequestXml $requestXml
+    
+    Write-Log "Calling Non-PoC service..."
     $nonPocResponse = Invoke-ServiceCall -Endpoint $script:nonPocEndpoint -RequestXml $requestXml
 
     # Perform diff analysis
     Write-Log "Performing diff analysis"
-    $diffResult = Compare-XmlContent -ReferenceXml $pocResponse -DifferenceXml $nonPocResponse -OrderSignificant:$OrderSignificant
+    $diffResult = Compare-XmlContent -ReferenceXml $pocResponse.OuterXml -DifferenceXml $nonPocResponse.OuterXml -OrderSignificant:$OrderSignificant
 
     # Generate HTML report
     Write-Log "Generating diff report"
-    $htmlReport = Convert-DiffToHtml -DiffResult $diffResult -RequestXml $requestXml -PocResponse $pocResponse -NonPocResponse $nonPocResponse
+    $htmlReport = Convert-DiffToHtml -DiffResult $diffResult -RequestXml $requestXml -PocResponse $pocResponse.OuterXml -NonPocResponse $nonPocResponse.OuterXml
 
     # Output report
     if ($OutputPath) {

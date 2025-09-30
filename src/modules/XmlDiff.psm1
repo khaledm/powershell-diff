@@ -1,6 +1,8 @@
 # XML Diff Module for PowerShell 7.5.x
 # Handles accurate comparison of XML documents with special focus on preserving decimal/monetary values
 
+using namespace System.Xml
+
 function Compare-XmlContent {
     [CmdletBinding()]
     param (
@@ -17,7 +19,16 @@ function Compare-XmlContent {
     )
 
     try {
-        # Validate XML input
+        # Helper function to parse monetary values
+        function Get-DecimalValue {
+            param([XmlNode]$node)
+            try {
+                return [decimal]$node.InnerText
+            }
+            catch {
+                return $node.InnerText
+            }
+        }
         if ([string]::IsNullOrWhiteSpace($ReferenceXml) -or [string]::IsNullOrWhiteSpace($DifferenceXml)) {
             throw "XML content cannot be empty or whitespace"
         }
