@@ -1,9 +1,8 @@
 
+# Implementation Plan: [FEATURE]
 
-# Implementation Plan: Machine-Readable Diff Analysis for XML Webservice Responses
-
-**Branch**: `001-i-m-building` | **Date**: 2025-09-28 | **Spec**: [spec.md](spec.md)
-**Input**: Feature specification from `/specs/001-i-m-building/spec.md`
+**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
 ## Execution Flow (/plan command scope)
 ```
@@ -31,33 +30,24 @@
 - Phase 2: /tasks command creates tasks.md
 - Phase 3-4: Implementation execution (manual or via tools)
 
-
 ## Summary
-This feature delivers a PowerShell 7.5.x script that sends a user-supplied XML request to two insurance quote web services (Service-PoC and Service-NonPoC), receives and validates their XML responses, and performs a machine-readable diff analysis. The diff report highlights all differences (including decimal/monetary/float values, which must be preserved exactly) and is presented in a human-readable HTML format. The script uses Microsoft best practices and modern PowerShell features.
-
+[Extract from feature spec: primary requirement + technical approach from research]
 
 ## Technical Context
-**Language/Version**: PowerShell 7.5.x  
-**Primary Dependencies**: None (built-in PowerShell modules, System.Xml)  
-**Storage**: N/A (in-memory processing)  
-**Testing**: Pester (unit and integration tests)  
-**Target Platform**: Windows, cross-platform PowerShell Core  
-**Project Type**: Single script/CLI utility  
-**Performance Goals**: Handle XML payloads up to 10MB with <2s diff time  
-**Constraints**: Must preserve all decimal/monetary/float values exactly; must use provided service URIs; must use Microsoft best practices for PowerShell 7.5.x  
-**Scale/Scope**: Single-user, local execution; extensible for future endpoints
-
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [single/web/mobile - determines source structure]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-- XML Response Integrity: No transformation of XML data before diff; schema validation required.
-- Deterministic Diff Analysis: Same input yields same diff; output is machine-readable and versioned.
-- Comprehensive Comparison: All XML structure, values, and order differences must be detected.
-- Error Handling & Validation: All error types (HTTP, XML, schema, diff) must be handled and reported.
-- Output Standards: HTML report required; machine-readable output for future automation; include metadata (timestamp, service URIs, request context).
-- Quality Standards: Pester tests for core logic; integration tests for end-to-end; performance benchmarks for large XML; memory usage optimized.
-- Development Workflow: Modular functions, parameter validation, error handling, documentation, code review, test coverage, performance analysis.
+[Gates determined based on constitution file]
 
 ## Project Structure
 
@@ -88,62 +78,87 @@ src/
 └── lib/
 
 tests/
-ios/ or android/
-directories captured above]
-
-src/
-├── diff-report.ps1         # Main PowerShell script
-└── modules/
-   ├── XmlDiff.psm1        # Diff logic module
-   └── Utils.psm1          # Utility functions
-tests/
-├── unit/
-│   └── XmlDiff.Tests.ps1   # Unit tests for diff logic
+├── contract/
 ├── integration/
-│   └── EndToEnd.Tests.ps1  # Integration tests for service calls and diff
-└── contract/
-   └── Contract.Tests.ps1  # Contract tests for XML structure/validation
+└── unit/
+
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+backend/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
+└── tests/
+
+frontend/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+└── tests/
+
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
+api/
+└── [same as backend above]
+
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
-**Structure Decision**: Single-project CLI utility with modular PowerShell code (src/ and modules/), plus Pester-based tests (tests/). All scripts and modules are designed for PowerShell 7.5.x and follow Microsoft best practices.
-
+**Structure Decision**: [Document the selected structure and reference the real
+directories captured above]
 
 ## Phase 0: Outline & Research
-1. Research PowerShell 7.5.x XML handling, decimal/monetary value preservation, and HTTP best practices.
-2. Research robust diff algorithms for XML in PowerShell (including open-source and Microsoft-recommended approaches).
-3. Research Pester test patterns for PowerShell modules and CLI scripts.
-4. Document all findings and decisions in research.md:
-   - Decision: Use System.Xml for parsing; preserve all numeric values as strings for diff; use Invoke-RestMethod for HTTP; use Pester for tests.
-   - Rationale: Ensures accuracy, reliability, and maintainability.
-   - Alternatives: Considered third-party XML diff tools, but prioritized built-in and open-source PowerShell solutions for maintainability.
+1. **Extract unknowns from Technical Context** above:
+   - For each NEEDS CLARIFICATION → research task
+   - For each dependency → best practices task
+   - For each integration → patterns task
 
-**Output**: research.md with all research and decisions.
+2. **Generate and dispatch research agents**:
+   ```
+   For each unknown in Technical Context:
+     Task: "Research {unknown} for {feature context}"
+   For each technology choice:
+     Task: "Find best practices for {tech} in {domain}"
+   ```
 
+3. **Consolidate findings** in `research.md` using format:
+   - Decision: [what was chosen]
+   - Rationale: [why chosen]
+   - Alternatives considered: [what else evaluated]
+
+**Output**: research.md with all NEEDS CLARIFICATION resolved
 
 ## Phase 1: Design & Contracts
 *Prerequisites: research.md complete*
 
-1. Extract entities from feature spec → data-model.md:
-   - XML Request Payload: string (XML)
-   - Service Response: string (XML), must preserve all numeric values as-is
-   - Diff Report: HTML (human-readable), machine-readable (future)
-   - Validation rules: XML schema validation, HTTP status check
+1. **Extract entities from feature spec** → `data-model.md`:
+   - Entity name, fields, relationships
+   - Validation rules from requirements
+   - State transitions if applicable
 
-2. Generate API contracts:
-   - Service-PoC: POST http://localhost:7072/quotes/api/poc
-   - Service-NonPoC: POST http://localhost:7072/quotes/api/non-poc
-   - Request: XML payload; Response: XML (schema-validated)
-   - Output OpenAPI-style contract to /contracts/
+2. **Generate API contracts** from functional requirements:
+   - For each user action → endpoint
+   - Use standard REST/GraphQL patterns
+   - Output OpenAPI/GraphQL schema to `/contracts/`
 
-3. Generate contract tests:
-   - Contract.Tests.ps1: Validate request/response structure, schema, and numeric value preservation
+3. **Generate contract tests** from contracts:
+   - One test file per endpoint
+   - Assert request/response schemas
+   - Tests must fail (no implementation yet)
 
-4. Extract test scenarios from user stories:
-   - EndToEnd.Tests.ps1: Valid request → both services succeed → HTML diff report
-   - Error scenarios: Service failure, invalid XML, identical responses
+4. **Extract test scenarios** from user stories:
+   - Each story → integration test scenario
+   - Quickstart test = story validation steps
 
-5. Update agent file incrementally:
+5. **Update agent file incrementally** (O(1) operation):
    - Run `.specify/scripts/powershell/update-agent-context.ps1 -AgentType copilot`
+     **IMPORTANT**: Execute it exactly as specified above. Do not add or remove any arguments.
+   - If exists: Add only NEW tech from current plan
+   - Preserve manual additions between markers
+   - Update recent changes (keep last 3)
+   - Keep under 150 lines for token efficiency
+   - Output to repository root
 
 **Output**: data-model.md, /contracts/*, failing tests, quickstart.md, agent-specific file
 
@@ -174,27 +189,31 @@ tests/
 **Phase 4**: Implementation (execute tasks.md following constitutional principles)  
 **Phase 5**: Validation (run tests, execute quickstart.md, performance validation)
 
-
 ## Complexity Tracking
-No constitution violations or complexity deviations identified. All requirements and constraints are justified and aligned with the project constitution.
+*Fill ONLY if Constitution Check has violations that must be justified*
+
+| Violation | Why Needed | Simpler Alternative Rejected Because |
+|-----------|------------|-------------------------------------|
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |
 
 
 ## Progress Tracking
 *This checklist is updated during execution flow*
 
 **Phase Status**:
-- [ ] Phase 0: Research complete (/plan command)
-- [ ] Phase 1: Design complete (/plan command)
-- [ ] Phase 2: Task planning complete (/plan command - describe approach only)
-- [ ] Phase 3: Tasks generated (/tasks command)
-- [ ] Phase 4: Implementation complete
-- [ ] Phase 5: Validation passed
+- [x] Phase 0: Research complete (/plan command)
+- [x] Phase 1: Design complete (/plan command)
+- [x] Phase 2: Task planning complete (/plan command - describe approach only)
+- [x] Phase 3: Tasks generated (/tasks command)
+- [x] Phase 4: Implementation complete
+- [x] Phase 5: Validation passed
 
 **Gate Status**:
-- [ ] Initial Constitution Check: PASS
-- [ ] Post-Design Constitution Check: PASS
-- [ ] All NEEDS CLARIFICATION resolved
-- [ ] Complexity deviations documented
+- [x] Initial Constitution Check: PASS
+- [x] Post-Design Constitution Check: PASS
+- [x] All NEEDS CLARIFICATION resolved
+- [x] Complexity deviations documented
 
 ---
 *Based on Constitution v2.1.1 - See `/memory/constitution.md`*

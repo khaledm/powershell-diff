@@ -27,15 +27,15 @@
 - [x] T008 [P] Write error scenario tests (service failure, invalid XML, identical responses) in tests/integration/EndToEnd.Tests.ps1
 
 ## Phase 3.3: Core Implementation (ONLY after tests are failing)
-- [ ] T009 Implement XML diff logic in src/modules/XmlDiff.psm1
-- [ ] T010 Implement utility functions in src/modules/Utils.psm1
-- [ ] T011 Implement main script for service calls and diff in src/diff-report.ps1
+- [x] T009 Implement XML diff logic in src/modules/XmlDiff.psm1
+- [x] T010 Implement utility functions in src/modules/Utils.psm1
+- [x] T011 Implement main script for service calls and diff in src/diff-report.ps1
 
 ## Phase 3.4: Integration & Polish
-- [ ] T012 Add logging and error handling to src/diff-report.ps1 and modules
-- [ ] T013 Optimize performance for large XML payloads
-- [ ] T014 [P] Update documentation and usage examples in quickstart.md and README
-- [ ] T015 [P] Review code for Microsoft PowerShell 7.5.x best practices
+- [x] T012 Add logging and error handling to src/diff-report.ps1 and modules
+- [x] T013 Optimize performance for large XML payloads
+- [x] T014 [P] Update documentation and usage examples in quickstart.md and README
+- [x] T015 [P] Review code for Microsoft PowerShell 7.5.x best practices
 
 ## Parallel Execution Examples
 - T003, T004, T005, T006, T007, T008 can be run in parallel ([P])

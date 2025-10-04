@@ -27,6 +27,8 @@
     Sends the request and saves the diff report to diff-report.html.
 #>
 
+#Requires -Modules @{ ModuleName='Logging'; ModuleVersion='1.0.0' }
+
 [CmdletBinding()]
 param (
     [Parameter(Mandatory = $true)]
