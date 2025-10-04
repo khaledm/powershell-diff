@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Sample insurance quote request XML 
+     Used to demonstrate the XML diff tool functionality
+     All monetary values use exact decimal representation -->
+<QuoteRequest>
+    <!-- Customer Information -->
+    <Customer>
+        <FirstName>John</FirstName>
+        <LastName>Smith</LastName>
+        <DateOfBirth>1985-06-15</DateOfBirth>
+        <Address>
+            <Street>123 Main Street</Street>
+            <City>Springfield</City>
+            <State>IL</State>
+            <ZipCode>62701</ZipCode>
+        </Address>
+    </Customer>
+
+    <!-- Vehicle Information -->
+    <Vehicle>
+        <Make>Toyota</Make>
+        <Model>Camry</Model>
+        <Year>2020</Year>
+        <VIN>1HGCM82633A123456</VIN>
+        <Usage>
+            <AnnualMileage>12000</AnnualMileage>
+            <PrimaryUse>Commute</PrimaryUse>
+        </Usage>
+    </Vehicle>
+
+    <!-- Coverage Details -->
+    <Coverage>
+        <Liability>
+            <BodilyInjury>
+                <LimitPerPerson>100000.00</LimitPerPerson>
+                <LimitPerAccident>300000.00</LimitPerAccident>
+            </BodilyInjury>
+            <PropertyDamage>
+                <LimitPerAccident>50000.00</LimitPerAccident>
+            </PropertyDamage>
+        </Liability>
+        <Collision>
+            <Deductible>500.00</Deductible>
+        </Collision>
+        <Comprehensive>
+            <Deductible>250.00</Deductible>
+        </Comprehensive>
+    </Coverage>
+
+    <!-- Optional Endorsements -->
+    <Endorsements>
+        <RentalCar>
+            <DailyLimit>30.00</DailyLimit>
+            <MaxDays>30</MaxDays>
+        </RentalCar>
+        <RoadSideAssistance>true</RoadSideAssistance>
+    </Endorsements>
+</QuoteRequest>

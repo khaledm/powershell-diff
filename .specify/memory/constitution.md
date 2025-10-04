@@ -1,50 +1,80 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+# PowerShell XML Diff Analysis Constitution
+
+<!--
+Sync Impact Report v1.0.0
+- Initial version creation
+- Added 5 core principles aligned with XML diff analysis requirements
+- Added sections for Quality Standards and Development Workflow
+- All templates require initial setup (⚠ pending)
+- No deferred placeholders
+-->
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. XML Response Integrity
+All XML response handling must preserve the complete structure and content of the original data. No data transformation allowed during the collection phase to maintain source truth.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Deterministic Diff Analysis
+Diff analysis must be deterministic and reproducible. Same input must always produce identical diff results. All diff operations must be documented and version controlled. Machine-readable output format is mandatory for automation support.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Comprehensive Comparison
+Diff analysis must cover all aspects of XML structure: elements, attributes, values, and hierarchical relationships. Comparison must track:
+- Element presence/absence
+- Value changes
+- Attribute modifications
+- Structural differences
+- Order changes (where significant)
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Error Handling & Validation
+Robust error handling is mandatory at every step:
+- Web service connection failures
+- XML parsing errors
+- Schema validation issues
+- Diff analysis exceptions
+All errors must be categorized and provide actionable context for resolution.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Output Standards
+Diff reports must be:
+- Machine-readable (structured format)
+- Human-readable (clear formatting)
+- Categorized by change type
+- Include metadata (timestamp, service versions, request context)
+- Support multiple output formats (XML, JSON, HTML)
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Quality Standards
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- All code must be tested with unit tests covering core diff logic
+- Integration tests must verify end-to-end workflow with sample data
+- Performance benchmarks required for large XML comparisons
+- Memory usage must be optimized for large documents
+- Code must follow PowerShell best practices and style guidelines
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Development Workflow
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+1. Script Development:
+   - Modular function design
+   - Clear parameter validation
+   - Proper error handling implementation
+   - Documentation with examples
+   
+2. Testing Requirements:
+   - Pester tests (unit tests) for diff logic
+
+3. Review Process:
+   - Code review focusing on algorithm correctness
+   - Test coverage verification
+   - Performance analysis
+   - Error handling validation
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+1. Constitution compliance is mandatory for all code changes
+2. Major version updates require:
+   - Full test suite passing
+   - Performance benchmark review
+   - Documentation updates
+   - Migration guide if breaking changes
+3. Regular audits of diff accuracy against known test cases
+4. Performance monitoring and optimization as needed
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Version: 1.0.0 | Ratified: 2025-09-28 | Last Amended: 2025-09-28

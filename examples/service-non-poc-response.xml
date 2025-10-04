@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Example response from Non-PoC service -->
+<QuoteResponse>
+    <QuoteId>Q12345-ALT</QuoteId>
+    <Customer>
+        <FullName>John Smith</FullName>
+        <Age>38</Age>
+        <RiskScore>82</RiskScore>
+    </Customer>
+    <Vehicle>
+        <Description>2020 Toyota Camry</Description>
+        <ValueCategory>MID_RANGE</ValueCategory>
+        <SafetyRating>4.5</SafetyRating>
+    </Vehicle>
+    <Coverage>
+        <TotalCoverageLimit>450000.00</TotalCoverageLimit>
+        <Deductibles>
+            <Collision>500.00</Collision>
+            <Comprehensive>250.00</Comprehensive>
+        </Deductibles>
+    </Coverage>
+    <Premium>
+        <BasePremium>1275.00</BasePremium>
+        <Adjustments>
+            <SafeDriverDiscount>-127.50</SafeDriverDiscount>
+            <LoyaltyDiscount>-76.50</LoyaltyDiscount>
+            <RiskFactor>55.00</RiskFactor>
+        </Adjustments>
+        <TotalPremium>1126.00</TotalPremium>
+        <MonthlyPayment>93.83</MonthlyPayment>
+    </Premium>
+</QuoteResponse>
